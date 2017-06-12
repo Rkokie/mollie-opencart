@@ -15,7 +15,7 @@
 <div id="content">
 	<div class="page-header">
 		<div class="container-fluid">
-			
+
 			<div class="pull-right">
 				<button type="submit" form="form-mollie" data-toggle="tooltip" title="<?php clean_echo($button_save) ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
 				<a href="<?php echo $cancel ?>" data-toggle="tooltip" title="<?php clean_echo($button_cancel) ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
@@ -30,7 +30,7 @@
 	</div>
 	<div class="container-fluid">
 		<ul class="nav nav-tabs">
-		  <?php foreach($shops as $store) { ?> 
+		  <?php foreach($shops as $store) { ?>
 		  	<li class="<?php if ($store['id'] == 0) { echo "active"; } ?>"><a data-toggle="tab" href="#store<?php echo $store['id']; ?>"><?php echo $store['name']; ?></a></li>
 		  <?php } ?>
 		</ul>
@@ -38,7 +38,7 @@
 		<form action="<?php echo $action ?>" method="post" enctype="multipart/form-data" id="form-mollie" class="form-horizontal">
 
 		<div class="tab-content">
-		
+
 		  <?php foreach ($shops as $store) { ?>
 			  <div id="store<?php echo $store['id']; ?>" class="tab-pane fade in <?php if($store['id'] == 0) { echo "active"; } ?>">
 
@@ -63,20 +63,21 @@
 					<div class="panel-body">
 						
 							<div class="form-group">
-								<div class="col-sm-2"></div>
-								<div class="col-sm-3"><strong><?php clean_echo($entry_payment_method) ?></strong></div>
-								<div class="col-sm-4"><strong><?php clean_echo($entry_activate) ?></strong></div>
-								<div class="col-sm-3"><strong><?php clean_echo($entry_sort_order) ?></strong></div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-3"><strong><?php clean_echo($entry_payment_method) ?></strong></div>
+								<div class="col-sm-2"><strong><?php clean_echo($entry_activate) ?></strong></div>
+                <div class="col-sm-3"><strong><?php clean_echo($entry_geo_zone) ?></strong></div>
+								<div class="col-sm-2"><strong><?php clean_echo($entry_sort_order) ?></strong></div>
 							</div>
 
 							<?php foreach ($stores[$store['id']]['payment_methods'] as $module_id => $payment_method) { ?>
 							<div class="form-group">
-								<div class="col-sm-2"></div>
-								<div class="col-sm-3">
-									<img src="<?php clean_echo($payment_method['icon']) ?>" width="20" style="float:left; margin-right:1em; margin-top:-3px" />
-									<?php clean_echo($payment_method['name']) ?>
-								</div>
-								<div class="col-sm-4">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-3">
+                  <img src="<?php clean_echo($payment_method['icon']) ?>" width="20" style="float: left; margin-right:1em; margin-top:-3px" />
+                  <?php clean_echo($payment_method['name']) ?>
+                </div>
+								<div class="col-sm-2">
 									<?php
 									// Hide the checkbox in case of an error, but don't remove the input entirely to make sure we keep our setting.
 									$show_checkbox = TRUE;
@@ -94,7 +95,19 @@
 									?>
 									<input type="checkbox" name="stores[<?php echo $store['id']; ?>][mollie_<?php echo $module_id ?>_status]"<?php if ($payment_method['status']) { ?> checked<?php } ?> style="cursor:pointer<?php if (!$show_checkbox) { ?>; display:none<?php } ?>" />
 								</div>
-								<div class="col-sm-3">
+                <div class="col-sm-3">
+                  <select name="stores[<?php echo $store['id']; ?>][mollie_<?php echo $module_id ?>_geo_zone]" class="form-control">
+                    <option value="0"><?php echo $text_all_zones; ?></option>
+                    <?php foreach ($geo_zones as $geo_zone) { ?>
+                      <?php if ($geo_zone['geo_zone_id'] == $payment_method['geo_zone']) { ?>
+                        <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
+                      <?php } else { ?>
+                        <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
+                      <?php } ?>
+                    <?php } ?>
+                  </select>
+                </div>
+								<div class="col-sm-2">
 									<input type="text" name="stores[<?php echo $store['id']; ?>][mollie_<?php echo $module_id ?>_sort_order]" value="<?php clean_echo($payment_method['sort_order']) ?>" class="form-control" style="text-align:right; max-width:60px" />
 								</div>
 							</div>

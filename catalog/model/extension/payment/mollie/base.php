@@ -92,6 +92,12 @@ class ModelExtensionPaymentMollieBase extends Model
 			return NULL;
 		}
 
+    $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get("mollie_" . static::MODULE_NAME . "_geo_zone") . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+
+    if ($this->config->get("mollie_" . static::MODULE_NAME . "_geo_zone") && !$query->num_rows) {
+      return NULL;
+    }
+
 		// Translate payment method (if a translation is available).
 		$this->load->language("extension/payment/mollie");
 

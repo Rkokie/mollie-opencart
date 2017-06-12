@@ -172,6 +172,7 @@ class ControllerExtensionPaymentMollieBase extends Controller
 		$this->load->model("setting/setting");
 		$this->load->model("setting/store");
 		$this->load->model("localisation/order_status");
+    $this->load->model("localisation/geo_zone");
 
 		$this->document->setTitle($this->language->get("heading_title"));
 
@@ -226,6 +227,7 @@ class ControllerExtensionPaymentMollieBase extends Controller
 		$data['text_missing_api_key']         = $this->language->get("text_missing_api_key");
 		$data['text_activate_payment_method'] = $this->language->get("text_activate_payment_method");
 		$data['text_no_status_id']            = $this->language->get("text_no_status_id");
+    $data['text_all_zones']               = $this->language->get("text_all_zones");
 
 		$data['entry_api_key']                  = $this->language->get("entry_api_key");
 		$data['entry_description']              = $this->language->get("entry_description");
@@ -234,6 +236,7 @@ class ControllerExtensionPaymentMollieBase extends Controller
 		$data['entry_status']                   = $this->language->get("entry_status");
 		$data['entry_mod_status']               = $this->language->get("entry_mod_status");
 		$data['entry_comm_status']              = $this->language->get("entry_comm_status");
+    $data['entry_geo_zone']                 = $this->language->get("entry_geo_zone");
 
 		$data['help_view_profile']              = $this->language->get("help_view_profile");
 		$data['help_api_key']                   = $this->language->get("help_api_key");
@@ -271,6 +274,8 @@ class ControllerExtensionPaymentMollieBase extends Controller
 		} else {
 			$data['error_warning'] = '';
 		}
+
+    $data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
 
 		foreach($shops as $store)
 		{
@@ -425,6 +430,15 @@ class ControllerExtensionPaymentMollieBase extends Controller
 				{
 					$payment_method['sort_order'] = isset($this->data['stores'][$store['id']]["mollie_" . $module_name . "_sort_order"]) ? $this->data['stores'][$store['id']]["mollie_" . $module_name . "_sort_order"] : null;
 				}
+
+                if (isset($this->request->post['stores'][$store['id']]['mollie_' . $module_name . '_geo_zone']))
+                {
+                    $payment_method['geo_zone'] = $this->request->post['stores'][$store['id']]['mollie_' . $module_name . '_geo_zone'];
+                }
+                else
+                {
+                    $payment_method['geo_zone'] = isset($this->data['stores'][$store['id']]["mollie_" . $module_name . "_geo_zone"]) ? $this->data['stores'][$store['id']]["mollie_" . $module_name . "_geo_zone"] : null;
+                }
 
 				$data['stores'][$store['id']]['payment_methods'][$module_name] = $payment_method;
 			}
